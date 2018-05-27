@@ -1,2 +1,2 @@
-##This will be a future READ ME. 
-Allah is tolerant. 
+# newepisodetracker
+Utility for reporting weekly based episodes 

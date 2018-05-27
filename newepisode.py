@@ -1,48 +1,37 @@
 import os
 import json
 import smtplib
-# from email.mime import multipart
-# MOAR COMMENTS
+import config #This file is used to import the user credentials.
 import urllib.request
 import hashlib
 from bs4 import BeautifulSoup
 class Email:
-    email = "episodetracktest@gmail.com"
-    password = "episodetrack42069"
-    sentFrom = email
+    sentFrom = config.EMAIL_ADDRESS
     to = ["stareye863@gmail.com"]
     subject = 'Anime Episode Update'
     body = "Hey what's up?\n"
-    msg="""
-    From: {0}
-    To: {1}
-    Subject{2}
-
-    {3}
-    """.format(sentFrom,to,subject,body)
-
+    # msg="""
+    # From: {0}
+    # To: {1}
+    # Subject{2}
+    # {3}
+    # """.format(sentFrom,to,subject,body)
+    msg ="Hello, test test 123"
     server = None
     def __init__(self):
-        self.ConnectAndLoginToServer()
+        pass
     
-    def ConnectAndLoginToServer(self):
+    def SendMail(self,subject,message):
         try:
-            server = smtplib.SMTP_SSL('smtp.gmail.com',465)
+            server = smtplib.SMTP('smtp.gmail.com:587')
             server.ehlo()
-            server.login(self.email,self.password)
-            self.sendmail()
+            server.starttls()
+            server.login(config.EMAIL_ADDRESS,config.PASSWORD)
+            self.server.sendmail(config.EMAIL_ADDRESS,self.to,self.msg)
+            self.server.quit()
+            print("Success!")
         except:
-            print("something went wrong")
-    def sendmail(self):
-        try:
-            self.server.sendmail(self.email,self.to,self.msg)
-            self.server.close()
-            print("success")
-        except:
-            print("failure")
-        
-            
-            
+            print("something went wrong")                               
 class Scrapper:
         soup = None
         url = ""
@@ -91,6 +80,7 @@ class Scrapper:
 
 
 myEmail = Email()
+myEmail.SendMail(myEmail.subject,myEmail.msg)
 
 target = Scrapper()
 print("Latest One Piece Episode")
