@@ -2,6 +2,7 @@ import os
 import json
 import smtplib
 # from email.mime import multipart
+# MOAR COMMENTS
 import urllib.request
 import hashlib
 from bs4 import BeautifulSoup
