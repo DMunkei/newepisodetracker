@@ -1,37 +1,35 @@
 import os
 import json
 import smtplib
+from email.message import EmailMessage
 import config #This file is used to import the user credentials.
 import urllib.request
 import hashlib
 from bs4 import BeautifulSoup
 class Email:
-    sentFrom = config.EMAIL_ADDRESS
-    to = ["stareye863@gmail.com"]
-    subject = 'Anime Episode Update'
-    body = "Hey what's up?\n"
-    # msg="""
-    # From: {0}
-    # To: {1}
-    # Subject{2}
-    # {3}
-    # """.format(sentFrom,to,subject,body)
-    msg ="Hello, test test 123"
-    server = None
+    reportMessage = EmailMessage()
+    #Sets the body of the email, can also be used to read out of a file.
+    #TODO: Make it so that it gets its content from the JSON file after doing the comparison.
+    reportMessage.set_content("Here is a update for the latest episodes:\n WIP!!")
+
+    reportMessage['Subject'] = "Anime Episode Update"
+    reportMessage['From'] = config.EMAIL_ADDRESS
+    reportMessage['To']= ["stareye863@gmail.com",config.EMAIL_ADDRESS,"qasimwarraich@gmail.com"]
+
     def __init__(self):
         pass
     
-    def SendMail(self,subject,message):
+    def SendMail(self):
         try:
-            server = smtplib.SMTP('smtp.gmail.com:587')
+            server = smtplib.SMTP('smtp.gmail.com',587)
             server.ehlo()
             server.starttls()
             server.login(config.EMAIL_ADDRESS,config.PASSWORD)
-            self.server.sendmail(config.EMAIL_ADDRESS,self.to,self.msg)
-            self.server.quit()
+            server.send_message(self.reportMessage)
+            server.quit()
             print("Success!")
         except:
-            print("something went wrong")                               
+            print("OH NO!! ABORT!!")                               
 class Scrapper:
         soup = None
         url = ""
@@ -78,9 +76,8 @@ class Scrapper:
                 self.CreateSoup()
                 return self.GetLatestAnimeEpisode()
 
-
 myEmail = Email()
-myEmail.SendMail(myEmail.subject,myEmail.msg)
+myEmail.SendMail()
 
 target = Scrapper()
 print("Latest One Piece Episode")
@@ -121,3 +118,5 @@ with open('EpisodeData.json', 'w') as file:
 #which will be used to send the E-Mail. After that overwrite the old data with the Up-to-date data.
 
 #Now send an E-Mail.
+# myEmail = Email()
+# myEmail.SendMail()
