@@ -6,6 +6,21 @@ import config #This file is used to import the user credentials.
 import urllib.request
 import hashlib
 from bs4 import BeautifulSoup
+
+class EpisodeData():        
+    onePiece = {}
+    boruto = {}
+    foodWars = {}
+    boku = {}
+    def __init__(self):
+        self.onePiece = {}
+        self.boruto = {}
+        self.foodWars = {}
+        self.boku = {}
+class MyEncoder(json.JSONEncoder):            
+    def encode(self,obj):
+        return obj.__dict__
+
 class Email:
     reportMessage = EmailMessage()
     #Sets the body of the email, can also be used to read out of a file.
@@ -75,45 +90,32 @@ class Scrapper:
                 self.GetWebsite(animeURL)
                 self.CreateSoup()
                 return self.GetLatestAnimeEpisode()
-
-myEmail = Email()
-myEmail.SendMail()
-
+episodes = EpisodeData()
+testEncoder = MyEncoder()
 target = Scrapper()
 print("Latest One Piece Episode")
-onepiece = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=One%20Piece")
-OPlastUpload = target.GetLastUpdatedSince()
+episodes.onePiece['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=One%20Piece")
+episodes.onePiece['Last Upload'] = target.GetLastUpdatedSince()
 print("Latest Boruto Episode")
-boruto = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Boruto%20-%20Naruto%20Next%20Generations")
-borutoLastUpload = target.GetLastUpdatedSince()
+episodes.boruto['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Boruto%20-%20Naruto%20Next%20Generations")
+episodes.boruto['Last Upload'] = target.GetLastUpdatedSince()
 print("Latest Food War Episode")
-foodWars = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Food%20Wars%20-%20The%20Third%20Plate%202018")
-foodWarsLastUpload = target.GetLastUpdatedSince()
-
-target.episodeData = {
-    "Anime" :
-    [
-        {
-            "One Piece":onepiece,
-            "Last uploaded":OPlastUpload
-        },
-        {
-            "Boruto":boruto,
-            "Last uploaded":borutoLastUpload
-        },
-        {
-            "Food War":foodWars,
-            "Last uploaded":foodWarsLastUpload
-        }
-    ]
-}
-jsonData = json.dumps(target.episodeData)
+episodes.foodWars['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Food%20Wars%20-%20The%20Third%20Plate%202018")
+episodes.foodWars['Last Upload'] = target.GetLastUpdatedSince()
+print("Latest Boku Episode")
+episodes.boku['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=My%20Hero%20Academia%203")
+episodes.boku['Last Upload'] = target.GetLastUpdatedSince()
+print(episodes)
+jsonData = testEncoder.encode(episodes)
 print(jsonData)
 print("Checking Json File")
 
 #TODO: Check if the file exists, if it does exist then just write inside it. Otherwise create it and write inside it.
-with open('EpisodeData.json', 'w') as file:
-        json.dump(target.episodeData,file)
+try:
+    with open('EpisodeData.json', 'w') as file:
+            json.dump(jsonData,file,indent=2)
+except IOError as e:
+    print(e)
 #If the file does exist, FIRST check with the data stored inside. Any differences need to be noted and then stored in another object/list
 #which will be used to send the E-Mail. After that overwrite the old data with the Up-to-date data.
 
