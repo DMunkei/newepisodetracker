@@ -6,7 +6,6 @@ import config #This file is used to import the user credentials.
 import urllib.request
 import hashlib
 from bs4 import BeautifulSoup
-
 class EpisodeData():        
     onePiece = {}
     boruto = {}
@@ -20,7 +19,6 @@ class EpisodeData():
 class MyEncoder(json.JSONEncoder):            
     def encode(self,obj):
         return obj.__dict__
-
 class Email:
     reportMessage = EmailMessage()
     #Sets the body of the email, can also be used to read out of a file.
@@ -92,7 +90,9 @@ class Scrapper:
                 return self.GetLatestAnimeEpisode()
 episodes = EpisodeData()
 testEncoder = MyEncoder()
+#Create the scrapping object
 target = Scrapper()
+#start scrapping all the episodes information
 print("Latest One Piece Episode")
 episodes.onePiece['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=One%20Piece")
 episodes.onePiece['Last Upload'] = target.GetLastUpdatedSince()
@@ -106,10 +106,10 @@ print("Latest Boku Episode")
 episodes.boku['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=My%20Hero%20Academia%203")
 episodes.boku['Last Upload'] = target.GetLastUpdatedSince()
 print(episodes)
+#Serialize the information
 jsonData = testEncoder.encode(episodes)
 print(jsonData)
 print("Checking Json File")
-
 #TODO: Check if the file exists, if it does exist then just write inside it. Otherwise create it and write inside it.
 try:
     with open('EpisodeData.json', 'w') as file:
