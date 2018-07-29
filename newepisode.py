@@ -1,93 +1,23 @@
-import os
 import json
-import smtplib
-from email.message import EmailMessage
-import config #This file is used to import the user credentials.
-import urllib.request
-import hashlib
-from bs4 import BeautifulSoup
-class EpisodeData():        
-    onePiece = {}
-    boruto = {}
-    foodWars = {}
-    boku = {}
-    def __init__(self):
-        self.onePiece = {}
-        self.boruto = {}
-        self.foodWars = {}
-        self.boku = {}
-class MyEncoder(json.JSONEncoder):            
-    def encode(self,obj):
-        return obj.__dict__
-class Email:
-    reportMessage = EmailMessage()
-    #Sets the body of the email, can also be used to read out of a file.
-    #TODO: Make it so that it gets its content from the JSON file after doing the comparison.
-    reportMessage.set_content("Here is a update for the latest episodes:\n WIP!!")
+from pathlib import Path
+from Scrapper import Scrapper
+from MyEncoder import MyEncoder
+from EpisodeData import EpisodeData
+import Email
+from pprint import pprint
 
-    reportMessage['Subject'] = "Anime Episode Update"
-    reportMessage['From'] = config.EMAIL_ADDRESS
-    reportMessage['To']= ["stareye863@gmail.com",config.EMAIL_ADDRESS,"qasimwarraich@gmail.com"]
+jsonFileExists = False
+jsonFileName = "EpisodeData.json"
+jsonFilePath = Path(jsonFileName)
+oldEpisodes=""
+emailEpisodeData = {}
 
-    def __init__(self):
-        pass
-    
-    def SendMail(self):
-        try:
-            server = smtplib.SMTP('smtp.gmail.com',587)
-            server.ehlo()
-            server.starttls()
-            server.login(config.EMAIL_ADDRESS,config.PASSWORD)
-            server.send_message(self.reportMessage)
-            server.quit()
-            print("Success!")
-        except:
-            print("OH NO!! ABORT!!")                               
-class Scrapper:
-        soup = None
-        url = ""
-        httpResponse = None
-        websiteContent = ""
-        episodeData = {}
-
-        def __init__(self):
-                pass
+if jsonFilePath.is_file():
+    print("EURICKA!!")
+    jsonFileExists=True
+    with open(jsonFileName) as oldInformation:
+        oldEpisodes = json.load(oldInformation)
         
-        #This sends a get request to the website and opens it
-        def GetWebsite(self, targetURL):
-                self.url = targetURL
-                self.httpResponse = urllib.request.Request(self.url,data=None,headers={"User Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"})
-                self.websiteContent=urllib.request.urlopen(self.httpResponse)           
-        #Creates the HTML Document Tree, so we can parse it
-        def CreateSoup(self):
-                self.soup = BeautifulSoup(self.websiteContent.read(), "html.parser")
-        #Formats the DOM
-        def PrettifyDOMTree(self):
-                print(self.soup.prettify())
-        #Don't know where I can use that yet...
-        def FindAttribute(self, tags):
-                targetAttribute=""
-                for tag in tags:
-                        targetAttribute += tag + " "
-                targetAttribute = targetAttribute.rstrip()
-                print("Searching for Tag...")
-                for tag in self.soup.select(targetAttribute):
-                        print(tag)
-        #Finds the latest anime episode.From the Soup object 
-        def GetLatestAnimeEpisode(self):
-            episode= target.soup.find_all("div", class_="infoepboxmain",limit=1)
-            episode =episode[0].text.split("\n")
-            return episode[2]        
-        def GetLastUpdatedSince(self):
-            lastUpdate = target.soup.find_all("div", class_="infoepboxmain",limit=1)
-            lastUpdate =lastUpdate[0].text.split("\n")
-            return lastUpdate[3]
-        #Invokes up all the method calls.
-        def CheckCurrentEpisode(self,animeURL):
-                self.GetWebsite(animeURL)
-                self.CreateSoup()
-                return self.GetLatestAnimeEpisode()
 episodes = EpisodeData()
 testEncoder = MyEncoder()
 #Create the scrapping object
@@ -105,19 +35,46 @@ episodes.foodWars['Last Upload'] = target.GetLastUpdatedSince()
 print("Latest Boku Episode")
 episodes.boku['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=My%20Hero%20Academia%203")
 episodes.boku['Last Upload'] = target.GetLastUpdatedSince()
+print("Latest Cells At Work Episode")
+episodes.cellsAtWork['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Cells%20at%20Work")
+episodes.cellsAtWork['Last Upload'] = target.GetLastUpdatedSince()
 print(episodes)
+
 #Serialize the information
-jsonData = testEncoder.encode(episodes)
-print(jsonData)
+currentEpisodes = testEncoder.encode(episodes)
+
+#if a file already exists, we start checking the differences here. If there are any, then we send an email with the differences. Otherwise, we just do nothing
+pprint(currentEpisodes)
+if(jsonFileExists == True):
+    for episodeLooper,episode in enumerate(oldEpisodes.values()):#The enumerate function makes it so we can add a counter to the forloop     
+        k = list(currentEpisodes.items())
+        showName = k[episodeLooper][0]
+        currentEpisodeInfo=list(k[episodeLooper][1].items())
+        freshEpisode = currentEpisodeInfo[0][1]
+        print(showName + freshEpisode)
+
+        #checks if both jsonfiles are identical
+        print (freshEpisode == episode['Episode'])
+
+        print(episode['Episode'])
+        if (freshEpisode == episode['Episode']):
+            print(freshEpisode)
+            print(episode['Episode'])
+            pass
+        else:
+            #add the information that will be sent later to the people
+            emailEpisodeData[showName] = freshEpisode
 print("Checking Json File")
-#TODO: Check if the file exists, if it does exist then just write inside it. Otherwise create it and write inside it.
 try:
     with open('EpisodeData.json', 'w') as file:
-            json.dump(jsonData,file,indent=2)
+            json.dump(currentEpisodes,file,indent=2)
 except IOError as e:
     print(e)
+
+
 #If the file does exist, FIRST check with the data stored inside. Any differences need to be noted and then stored in another object/list
 #which will be used to send the E-Mail. After that overwrite the old data with the Up-to-date data.
+
 
 #Now send an E-Mail.
 # myEmail = Email()
