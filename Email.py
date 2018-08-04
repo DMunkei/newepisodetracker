@@ -2,6 +2,14 @@ from email.message import EmailMessage
 import smtplib
 import config #This file is used to import the user credentials.
 class Email:
+    contentString=""
+    mailingList =["stareye863@gmail.com",
+    config.EMAIL_ADDRESS,
+    "qasimwarraich@gmail.com",
+    "saif.roshdy.h@gmail.com",
+    "dawn_wanderer@hotmail.com",
+    "joehedington@gmail.com",
+    "burhan.erdogrul@live.nl"]
     reportMessage = EmailMessage()
     #Sets the body of the email, can also be used to read out of a file.
     #TODO: Make it so that it gets its content from the JSON file after doing the comparison.
@@ -9,7 +17,7 @@ class Email:
 
     reportMessage['Subject'] = "Anime Episode Update"
     reportMessage['From'] = config.EMAIL_ADDRESS
-    reportMessage['To']= ["stareye863@gmail.com",config.EMAIL_ADDRESS,"qasimwarraich@gmail.com"]
+    reportMessage['To']= mailingList
 
     def __init__(self):
         pass
@@ -27,4 +35,7 @@ class Email:
             print("OH NO!! ABORT!!")
 
     def SetEmailContent(self,content):
-        EmailMessage.set_content("Here is a update for the latest episodes:\n WIP!!")  
+        self.contentString = "The new hot anime updates. :D\n\n"
+        for showName,episode in content.items():    
+            self.contentString +="{0} episode {1} is out!!GO WATCH IT!!\n\n".format(showName,episode)
+        self.reportMessage.set_content(self.contentString)

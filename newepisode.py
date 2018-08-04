@@ -3,21 +3,23 @@ from pathlib import Path
 from Scrapper import Scrapper
 from MyEncoder import MyEncoder
 from EpisodeData import EpisodeData
-import Email
+from Email import Email
 from pprint import pprint
 
+sendEmail = False
 jsonFileExists = False
 jsonFileName = "EpisodeData.json"
 jsonFilePath = Path(jsonFileName)
 oldEpisodes=""
 emailEpisodeData = {}
 
+ 
 if jsonFilePath.is_file():
     print("EURICKA!!")
     jsonFileExists=True
     with open(jsonFileName) as oldInformation:
         oldEpisodes = json.load(oldInformation)
-        
+
 episodes = EpisodeData()
 testEncoder = MyEncoder()
 #Create the scrapping object
@@ -38,6 +40,10 @@ episodes.boku['Last Upload'] = target.GetLastUpdatedSince()
 print("Latest Cells At Work Episode")
 episodes.cellsAtWork['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Cells%20at%20Work")
 episodes.cellsAtWork['Last Upload'] = target.GetLastUpdatedSince()
+print("Latest How NOT to summon a Demon Lord Episode")
+episodes.howNotToSummon['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=How%20NOT%20to%20Summon%20a%20Demon%20Lord%20Uncensored")
+episodes.howNotToSummon['Last Upload'] = target.GetLastUpdatedSince()
+
 print(episodes)
 
 #Serialize the information
@@ -63,7 +69,10 @@ if(jsonFileExists == True):
             pass
         else:
             #add the information that will be sent later to the people
+            print("fresh episode: " + freshEpisode + "old episode: " + episode['Episode'])
             emailEpisodeData[showName] = freshEpisode
+            sendEmail =True
+
 print("Checking Json File")
 try:
     with open('EpisodeData.json', 'w') as file:
@@ -77,5 +86,7 @@ except IOError as e:
 
 
 #Now send an E-Mail.
-# myEmail = Email()
-# myEmail.SendMail()
+if sendEmail:
+    myEmail = Email()
+    myEmail.SetEmailContent(emailEpisodeData)
+    myEmail.SendMail()
