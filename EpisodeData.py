@@ -5,6 +5,8 @@ class EpisodeData():
     boku = {}
     cellsAtWork = {}
     howNotToSummon = {}
+    overlord = {}
+    baki= {}
     def __init__(self):
         self.onePiece = {}
         self.boruto = {}
@@ -12,3 +14,5 @@ class EpisodeData():
         self.boku = {}
         self.cellsAtWork = {}
         self.howNotToSummon = {}
+        self.overlord = {}
+        self.baki={}

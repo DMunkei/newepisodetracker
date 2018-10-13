@@ -14,8 +14,9 @@ class Scrapper:
         #This sends a get request to the website and opens it
         def GetWebsite(self, targetURL):
                 self.url = targetURL
-                self.httpResponse = urllib.request.Request(self.url,data=None,headers={"User Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"})
+
+                self.httpResponse = urllib.request.Request(self.url,data=None,headers={"User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36"})
                 self.websiteContent=urllib.request.urlopen(self.httpResponse)           
         #Creates the HTML Document Tree, so we can parse it
         def CreateSoup(self):
@@ -41,6 +42,11 @@ class Scrapper:
             lastUpdate = self.soup.find_all("div", class_="infoepboxmain",limit=1)
             lastUpdate =lastUpdate[0].text.split("\n")
             return lastUpdate[3]
+        def GetAnimeStatus(self):                
+                for status in self.soup.find_all("div" , class_="textc"):
+                        if status.text == "Completed" or status.text == "Ongoing":
+                                return status.text
+
         #Invokes up all the method calls.
         def CheckCurrentEpisode(self,animeURL):
                 self.GetWebsite(animeURL)

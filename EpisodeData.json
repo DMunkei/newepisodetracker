@@ -1,26 +1,42 @@
 {
   "onePiece": {
-    "Episode": "847",
-    "Last Upload": "6 days ago"
+    "Episode": "856",
+    "Last Upload": "6 days ago",
+    "Status": "Ongoing"
   },
   "boruto": {
-    "Episode": "67",
-    "Last Upload": "2 days ago"
+    "Episode": "76",
+    "Last Upload": "6 days ago",
+    "Status": "Ongoing"
   },
   "foodWars": {
     "Episode": "12",
-    "Last Upload": "41 days ago"
+    "Last Upload": "110 days ago",
+    "Status": "Completed"
   },
   "boku": {
-    "Episode": "17",
-    "Last Upload": "9 hrs ago"
+    "Episode": "25",
+    "Last Upload": "14 days ago",
+    "Status": "Completed"
   },
   "cellsAtWork": {
-    "Episode": "5",
-    "Last Upload": "2 hrs ago"
+    "Episode": "13",
+    "Last Upload": "13 days ago",
+    "Status": "Completed"
   },
   "howNotToSummon": {
-    "Episode": "5",
-    "Last Upload": "2 days ago"
+    "Episode": "12",
+    "Last Upload": "23 days ago",
+    "Status": "Completed"
+  },
+  "overlord": {
+    "Episode": "13",
+    "Last Upload": "11 days ago",
+    "Status": "Completed"
+  },
+  "baki": {
+    "Episode": "16",
+    "Last Upload": "5 days ago",
+    "Status": "Ongoing"
   }
 }

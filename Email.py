@@ -3,24 +3,35 @@ import smtplib
 import config #This file is used to import the user credentials.
 class Email:
     contentString=""
+    properAnimeNames = dict()
     mailingList =["stareye863@gmail.com",
     config.EMAIL_ADDRESS,
     "qasimwarraich@gmail.com",
     "saif.roshdy.h@gmail.com",
     "dawn_wanderer@hotmail.com",
     "joehedington@gmail.com",
-    "burhan.erdogrul@live.nl"]
+    "burhan.erdogrul@live.nl",
+    "emanuel.koydl@gmail.com",
+    "disasterwarrior@gmail.com",]
     reportMessage = EmailMessage()
     #Sets the body of the email, can also be used to read out of a file.
     #TODO: Make it so that it gets its content from the JSON file after doing the comparison.
-    reportMessage.set_content("Here is a update for the latest episodes:\n WIP!!")
+    reportMessage.set_content("Here is a update for the latest episodes:\n ")
 
     reportMessage['Subject'] = "Anime Episode Update"
     reportMessage['From'] = config.EMAIL_ADDRESS
-    reportMessage['To']= mailingList
+    #reportMessage['To']= mailingList
+    reportMessage['BCC'] = mailingList
 
     def __init__(self):
-        pass
+        self.properAnimeNames["onePiece"] = "One Piece"
+        self.properAnimeNames["boruto"] = "Boruto - Naruto Next Generations"
+        self.properAnimeNames["cellsAtWork"] = "Cells at Work"
+        self.properAnimeNames["howNotToSummon"] = "How NOT to Summon a Demon Lord"
+        self.properAnimeNames["overlord"] = "Overlord 3rd Season"
+        self.properAnimeNames["baki"]= "Baki"
+        self.properAnimeNames["boku"] = "My Hero Academia 3"
+        self.properAnimeNames["foodWars"] = "Food Wars!: Shokugeki no Soma"
     
     def SendMail(self):
         try:
@@ -36,6 +47,9 @@ class Email:
 
     def SetEmailContent(self,content):
         self.contentString = "The new hot anime updates. :D\n\n"
-        for showName,episode in content.items():    
-            self.contentString +="{0} episode {1} is out!!GO WATCH IT!!\n\n".format(showName,episode)
+        for showName,showInfo in content.items():
+            if showInfo['Status'] == "Completed":
+                self.contentString += "{0} is over for this season.\n\n".format(self.properAnimeNames[showName])    
+            else:
+                self.contentString +="{0} episode {1} is out. GO WATCH IT!!\n\n".format(self.properAnimeNames[showName],showInfo['Episode'])
         self.reportMessage.set_content(self.contentString)
