@@ -16,7 +16,6 @@ showEpisodeAndStatus = {}
 
 
 if jsonFilePath.is_file():
-    #print("EURICKA!!")
     jsonFileExists = True
     with open(jsonFileName) as oldInformation:
         oldEpisodes = json.load(oldInformation)
@@ -61,6 +60,10 @@ episodes.overlord['Status'] = target.GetAnimeStatus()
 episodes.baki['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Baki")
 episodes.baki['Last Upload'] = target.GetLastUpdatedSince()
 episodes.baki['Status'] = target.GetAnimeStatus()
+
+episodes.blackClover['Episode'] = target.CheckCurrentEpisode("http://animeheaven.eu/i.php?a=Black%20Clover")
+episodes.blackClover['Last Upload'] = target.GetLastUpdatedSince()
+episodes.blackClover['Status'] = target.GetAnimeStatus()
 
 
 #print(episodes)

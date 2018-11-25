@@ -4,15 +4,6 @@ import config #This file is used to import the user credentials.
 class Email:
     contentString=""
     properAnimeNames = dict()
-    mailingList =["stareye863@gmail.com",
-    config.EMAIL_ADDRESS,
-    "qasimwarraich@gmail.com",
-    "saif.roshdy.h@gmail.com",
-    "dawn_wanderer@hotmail.com",
-    "joehedington@gmail.com",
-    "burhan.erdogrul@live.nl",
-    "emanuel.koydl@gmail.com",
-    "disasterwarrior@gmail.com",]
     reportMessage = EmailMessage()
     #Sets the body of the email, can also be used to read out of a file.
     #TODO: Make it so that it gets its content from the JSON file after doing the comparison.
@@ -20,8 +11,8 @@ class Email:
 
     reportMessage['Subject'] = "Anime Episode Update"
     reportMessage['From'] = config.EMAIL_ADDRESS
-    #reportMessage['To']= mailingList
-    reportMessage['BCC'] = mailingList
+    # reportMessage['To']= mailingList
+    reportMessage['BCC'] = config.mailingList
 
     def __init__(self):
         self.properAnimeNames["onePiece"] = "One Piece"
@@ -32,6 +23,7 @@ class Email:
         self.properAnimeNames["baki"]= "Baki"
         self.properAnimeNames["boku"] = "My Hero Academia 3"
         self.properAnimeNames["foodWars"] = "Food Wars!: Shokugeki no Soma"
+        self.properAnimeNames["blackClover"] = "Black Clover"
     
     def SendMail(self):
         try:
